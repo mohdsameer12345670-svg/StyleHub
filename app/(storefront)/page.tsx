@@ -253,12 +253,12 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-wrap items-center gap-4"
+                className="flex flex-wrap items-center gap-4 "
               >
                 <Link href="/products">
                   <Button
-                    size="md"
-                    className="gap-2 group shadow-md"
+                    size="sm"
+                    className="gap-2 group shadow-md h-16 w-22"
                   >
                     Shop Now
                     <ArrowRight
@@ -645,7 +645,10 @@ export default function HomePage() {
             >
               <TiltCard className="group rounded-3xl overflow-hidden cursor-pointer relative block">
                 <Link href={item.href}>
-                  <div className="relative overflow-hidden" style={{ aspectRatio: '16/10' }}>
+                 <div
+  className="relative overflow-hidden"
+  style={{ height: '280px' }}
+>
                     <img
                       src={item.image}
                       alt={item.title}
@@ -662,8 +665,7 @@ export default function HomePage() {
                         <p className="text-[11px] uppercase tracking-[0.2em] text-white/70 mb-1">{item.sub}</p>
                         <h3 className="font-serif text-[36px] text-white tracking-[-0.02em] mb-4">{item.title}</h3>
                         <motion.div
-                          className="inline-flex items-center gap-2 text-[13px] font-semibold text-white border border-white/30 rounded-full px-5 py-2"
-                          whileHover={{ scale: 1.04 }}
+                          className="inline-flex items-center gap-2 text-[13px] font-semibold text-white border border-white/30 rounded-full px-5 py-2"  whileHover={{ scale: 1.04 }}
                         >
                           Shop Now <ArrowRight size={13} />
                         </motion.div>
