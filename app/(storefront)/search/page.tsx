@@ -79,6 +79,8 @@ export default function SearchPage() {
          *
          * Only active products are returned.
          */
+ 
+
         const { data, error } = await supabase
           .from('products')
           .select(`
@@ -90,36 +92,25 @@ export default function SearchPage() {
             )
           `)
           .eq('status', 'active')
-          .or(
-            `title.ilike.%${trimmedQuery}%,slug.ilike.%${trimmedQuery}%,sku.ilike.%${trimmedQuery}%`
-          )
+          .ilike('title', `%${trimmedQuery}%`)
           .order('created_at', { ascending: false })
           .limit(20);
 
-        if (error || !data || data.length === 0) {
-          const lowerQ = trimmedQuery.toLowerCase();
-          const mockMatches = demoProducts.filter(
-            (p) =>
-              p.title.toLowerCase().includes(lowerQ) ||
-              p.slug.toLowerCase().includes(lowerQ) ||
-              p.description?.toLowerCase().includes(lowerQ) ||
-              p.category?.name.toLowerCase().includes(lowerQ)
-          );
-          setResults(mockMatches);
-        } else {
-          setResults(data as Product[]);
+        if (error) {
+          throw error;
         }
+
+        setResults((data ?? []) as Product[]);
         setHasSearched(true);
       } catch (error) {
-        console.error('Search error, using fallback:', error);
-        const lowerQ = trimmedQuery.toLowerCase();
-        const mockMatches = demoProducts.filter(
-          (p) =>
-            p.title.toLowerCase().includes(lowerQ) ||
-            p.slug.toLowerCase().includes(lowerQ) ||
-            p.description?.toLowerCase().includes(lowerQ)
+        console.error('Search error:', error);
+        // Fallback to demo products if Supabase query fails
+        const filtered = demoProducts.filter(
+          (product) =>
+            product.title.toLowerCase().includes(trimmedQuery.toLowerCase()) ||
+            product.slug.toLowerCase().includes(trimmedQuery.toLowerCase())
         );
-        setResults(mockMatches);
+        setResults(filtered);
         setHasSearched(true);
       } finally {
         setIsSearching(false);

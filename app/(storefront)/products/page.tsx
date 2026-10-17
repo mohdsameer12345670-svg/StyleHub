@@ -698,28 +698,31 @@ function ProductsListContent() {
               Sort by
             </span>
 
-            <select
-              value={selectedSort}
-              onChange={(e) =>
-                updateURL({
-                  sort: e.target
-                    .value,
-                })
-              }
-              className="h-[44px] px-[16px] border border-border-strong rounded-[8px] bg-white text-[14px] font-medium outline-none focus:border-accent"
-            >
-              <option value="newest">
-                Newest Arrivals
-              </option>
+<select
+  id="product-sort"
+  name="sort"
+  aria-label="Sort products"
+  value={selectedSort}
+  onChange={(e) =>
+    updateURL({
+      sort: e.target.value,
+    })
+  }
+  className="h-[44px] px-[16px] border border-border-strong rounded-[8px] bg-white text-[14px] font-medium outline-none focus:border-accent"
+>
+  <option value="newest">
+    Newest Arrivals
+  </option>
 
-              <option value="price-low">
-                Price: Low to High
-              </option>
+  <option value="price-low">
+    Price: Low to High
+  </option>
 
-              <option value="price-high">
-                Price: High to Low
-              </option>
-            </select>
+  <option value="price-high">
+    Price: High to Low
+  </option>
+</select>
+
           </div>
         </div>
       </div>

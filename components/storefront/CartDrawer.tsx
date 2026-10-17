@@ -63,7 +63,7 @@ export default function CartDrawer() {
                   <p className="text-[14px] text-foreground-secondary mb-[24px]">
                     Add items to your cart to see them here.
                   </p>
-                  <Button onClick={closeCart} variant="outline" size="md">
+                  <Button onClick={closeCart} variant="outline" size="sm">
                     Continue Shopping
                   </Button>   
                 </div>
