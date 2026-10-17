@@ -1184,7 +1184,7 @@ function ProductsListContent() {
 
                   <Button
                     variant="outline"
-                    size="md"
+                    size="sm"
                     onClick={() =>
                       setVisibleCount(
                         (
