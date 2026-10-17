@@ -428,9 +428,9 @@ export default function HomePage() {
                 transition={{ duration: 0.65, delay: i * 0.12, ease: [0.25, 0.1, 0.25, 1] }}
                 style={{ transformStyle: 'preserve-3d' }}
               >
-    <TiltCard
-  className="group cursor-pointer rounded-3xl overflow-hidden relative [transform-style:preserve-3d]"
->
+                <TiltCard
+                  className="group cursor-pointer rounded-3xl overflow-hidden relative [transform-style:preserve-3d]"
+                >
 
                   <div className="relative overflow-hidden" style={{ aspectRatio: '3/4' }}>
                     <img
@@ -645,10 +645,10 @@ export default function HomePage() {
             >
               <TiltCard className="group rounded-3xl overflow-hidden cursor-pointer relative block">
                 <Link href={item.href}>
-                 <div
-  className="relative overflow-hidden"
-  style={{ height: '280px' }}
->
+                  <div
+                    className="relative overflow-hidden"
+                    style={{ height: '280px' }}
+                  >
                     <img
                       src={item.image}
                       alt={item.title}
@@ -665,7 +665,7 @@ export default function HomePage() {
                         <p className="text-[11px] uppercase tracking-[0.2em] text-white/70 mb-1">{item.sub}</p>
                         <h3 className="font-serif text-[36px] text-white tracking-[-0.02em] mb-4">{item.title}</h3>
                         <motion.div
-                          className="inline-flex items-center gap-2 text-[13px] font-semibold text-white border border-white/30 rounded-full px-5 py-2"  whileHover={{ scale: 1.04 }}
+                          className="inline-flex items-center gap-2 text-[13px] font-semibold text-white border border-white/30 rounded-full px-5 py-2" whileHover={{ scale: 1.04 }}
                         >
                           Shop Now <ArrowRight size={13} />
                         </motion.div>
@@ -768,26 +768,31 @@ export default function HomePage() {
               </motion.div>
             ) : (
               <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto">
-                <div className="flex h-11 rounded-lg overflow-hidden bg-white/10 border border-white/20 focus-within:border-[#c8a97e]/60 transition-colors">
+                <div className="flex w-full h-5 rounded-xl overflow-hidden bg-white/10 border border-white/20 focus-within:border-[#c8a97e]/60 transition-colors">
                   <input
                     type="email"
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
-                    placeholder="Your email"
+                    placeholder="Enter your email"
                     required
-                    className="flex-1 min-w-0 px-4 h-full bg-transparent text-white placeholder-white/40 text-[13px] outline-none"
+                    className="flex-1 min-w-0 w-0 px-3 sm:px-4 h-full bg-transparent text-white placeholder-white/50 text-sm outline-none"
                   />
+
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
-                    className="h-full px-5 shrink-0 bg-white text-[#1a1a1a] text-[12px] font-semibold hover:bg-[#c8a97e] hover:text-white transition-colors disabled:opacity-60 cursor-pointer"
+                    className="h-full px-3 sm:px-4 shrink-0 whitespace-nowrap bg-white text-[#1a1a1a] text-xs sm:text-sm font-semibold hover:bg-[#c8a97e] hover:text-white transition-colors disabled:opacity-60 cursor-pointer"
                   >
                     {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                   </motion.button>
                 </div>
-                <p className="mt-4 text-[11px] text-white/30 text-center">No spam, ever. Unsubscribe at any time.</p>
+
+                <p className="mt-4 text-[11px] text-white/40 text-center">
+                  No spam, ever. Unsubscribe at any time.
+                </p>
+
               </form>
             )}
           </div>
