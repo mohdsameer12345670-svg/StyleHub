@@ -52,7 +52,7 @@ export default function AdminLayout({
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/');
+    window.location.href = '/auth/signin';
   };
 
   return (
@@ -64,7 +64,7 @@ export default function AdminLayout({
           <span className="font-semibold text-[18px] text-foreground">Admin Portal</span>
         </div>
 
-        <nav className="flex-1 px-[16px] py-[24px] space-y-[4px]">
+        <nav className="flex-1 px-[16px] py-[16px] space-y-[4px] overflow-y-auto min-h-0">
           {adminNavLinks.map((link) => {
             const isActive = pathname === link.href;
             const Icon = link.icon;
@@ -73,7 +73,7 @@ export default function AdminLayout({
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'flex items-center gap-[12px] h-[48px] px-[16px] rounded-[8px] text-[14px] font-medium transition-colors',
+                  'flex items-center gap-[12px] h-[44px] px-[16px] rounded-[8px] text-[14px] font-medium transition-colors',
                   isActive
                     ? 'bg-accent text-white'
                     : 'text-foreground-secondary hover:text-foreground hover:bg-foreground/5'
@@ -86,26 +86,33 @@ export default function AdminLayout({
           })}
         </nav>
 
-        {/* User Card info */}
-        <div className="p-[16px] border-t border-border space-y-[12px]">
-          <div className="flex items-center gap-[12px]">
-            <div className="w-[36px] h-[36px] bg-accent/10 rounded-full flex items-center justify-center font-semibold text-accent text-[14px]">
+        {/* User Card info & Sign Out in Sidebar (Pinned) */}
+        <div className="shrink-0 p-[16px] border-t border-border space-y-[10px] bg-admin-sidebar">
+          <Link
+            href="/"
+            className="flex items-center gap-[10px] h-[36px] px-[12px] rounded-[6px] text-[13px] font-medium text-foreground-secondary hover:text-foreground hover:bg-foreground/5 border border-border transition-colors"
+          >
+            <Globe size={15} />
+            <span>View Storefront</span>
+          </Link>
+          <div className="flex items-center gap-[10px]">
+            <div className="w-[32px] h-[32px] bg-accent/10 rounded-full flex items-center justify-center font-semibold text-accent text-[13px]">
               {profile?.full_name?.[0] || 'A'}
             </div>
-            <div className="min-w-0">
-              <p className="text-[13px] font-semibold text-foreground truncate">
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] font-semibold text-foreground truncate">
                 {profile?.full_name || 'Admin User'}
               </p>
               <p className="text-[11px] text-foreground-secondary truncate">
-                {profile?.email || 'admin@StyleHub.com'}
+                {profile?.email || 'admin'}
               </p>
             </div>
           </div>
           <button
             onClick={handleSignOut}
-            className="flex items-center justify-center gap-[8px] w-full h-[36px] rounded-[6px] border border-destructive/20 text-destructive text-[13px] font-medium hover:bg-destructive/5 transition-colors"
+            className="flex items-center justify-center gap-[8px] w-full h-[36px] rounded-[6px] bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 text-[13px] font-semibold transition-colors shadow-sm"
           >
-            <LogOut size={14} />
+            <LogOut size={15} />
             Sign Out
           </button>
         </div>
@@ -113,15 +120,43 @@ export default function AdminLayout({
 
       {/* Main Content Area */}
       <div className="flex-1 lg:pl-[260px] flex flex-col min-h-screen">
-        {/* Top Header Mobile Navigation */}
-        <header className="h-[72px] bg-white border-b border-border px-[24px] flex items-center justify-between lg:hidden sticky top-0 z-30">
-          <span className="font-semibold text-[16px]">Admin Dashboard</span>
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="p-[8px] rounded-full hover:bg-foreground/5"
-          >
-            <Menu size={20} />
-          </button>
+        {/* Top Header Navigation (Desktop & Mobile) */}
+        <header className="h-[64px] bg-white border-b border-border px-[24px] flex items-center justify-between sticky top-0 z-30 shadow-sm">
+          <div className="flex items-center gap-[12px]">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-[8px] rounded-lg hover:bg-foreground/5 lg:hidden"
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
+            <span className="font-semibold text-[17px] text-foreground">Admin Portal</span>
+          </div>
+
+          <div className="flex items-center gap-[12px]">
+            <Link
+              href="/"
+              className="hidden sm:flex items-center gap-[6px] px-[12px] py-[7px] rounded-[8px] border border-border text-[13px] font-medium text-foreground-secondary hover:text-foreground hover:bg-foreground/5 transition-colors"
+            >
+              <Globe size={15} />
+              <span>View Storefront</span>
+            </Link>
+
+            <div className="hidden md:flex items-center gap-[6px] px-[10px] py-[6px] rounded-[8px] bg-foreground/5 text-[12px]">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="font-medium text-foreground truncate max-w-[180px]">
+                {profile?.email || 'Admin'}
+              </span>
+            </div>
+
+            <button
+              onClick={handleSignOut}
+              className="flex items-center gap-[6px] px-[14px] py-[7px] rounded-[8px] bg-red-600 hover:bg-red-700 text-white text-[13px] font-semibold transition-all shadow-sm active:scale-95"
+            >
+              <LogOut size={15} />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </header>
 
         {/* Mobile Sidebar overlay */}
@@ -168,6 +203,27 @@ export default function AdminLayout({
                     );
                   })}
                 </nav>
+
+                <div className="p-[16px] border-t border-border space-y-[10px]">
+                  <Link
+                    href="/"
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="flex items-center justify-center gap-[8px] w-full h-[38px] rounded-[6px] border border-border text-[13px] font-medium text-foreground-secondary hover:text-foreground hover:bg-foreground/5 transition-colors"
+                  >
+                    <Globe size={15} />
+                    View Storefront
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                      handleSignOut();
+                    }}
+                    className="flex items-center justify-center gap-[8px] w-full h-[38px] rounded-[6px] border border-destructive/20 text-destructive text-[13px] font-medium hover:bg-destructive/5 transition-colors"
+                  >
+                    <LogOut size={15} />
+                    Sign Out
+                  </button>
+                </div>
               </motion.aside>
             </>
           )}

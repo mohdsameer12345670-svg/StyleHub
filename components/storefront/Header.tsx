@@ -47,6 +47,8 @@ export default function Header() {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   const { itemCount, openCart } = useCart();
   const { user, profile, isAdmin, signOut } = useAuth();
@@ -57,6 +59,16 @@ export default function Header() {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -75,11 +87,14 @@ export default function Header() {
     return () => { document.body.style.overflow = ''; };
   }, [isMobileMenuOpen]);
 
-  useEffect(() => { setIsMobileMenuOpen(false); }, [pathname]);
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setIsUserMenuOpen(false);
+  }, [pathname]);
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/');
+    window.location.href = '/auth/signin';
   };
 
   const userDisplayName =
@@ -212,16 +227,94 @@ export default function Header() {
               </AnimatePresence>
             </button>
 
-            {/* User Account Button (Desktop & Tablet) */}
+            {/* User Account Button & Dropdown (Desktop & Tablet) */}
             {user ? (
-              <button
-                type="button"
-                aria-label="Account"
-                onClick={() => router.push('/account')}
-                className="w-[32px] h-[32px] sm:w-[34px] sm:h-[34px] rounded-full bg-[#1a1a1a] text-white text-[13px] font-bold flex items-center justify-center hover:opacity-85 transition-opacity"
-              >
-                {userDisplayName.charAt(0).toUpperCase()}
-              </button>
+              <div className="flex items-center gap-2 relative" ref={userMenuRef}>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-neutral-900 text-white text-[12px] font-semibold rounded-full hover:bg-neutral-800 transition-colors shadow-sm"
+                  >
+                    <ShieldCheck size={13} />
+                    <span>Admin</span>
+                  </Link>
+                )}
+                <button
+                  type="button"
+                  aria-label="Account Menu"
+                  onClick={() => setIsUserMenuOpen((prev) => !prev)}
+                  className="w-[32px] h-[32px] sm:w-[34px] sm:h-[34px] rounded-full bg-[#1a1a1a] text-white text-[13px] font-bold flex items-center justify-center hover:opacity-85 transition-opacity ring-2 ring-transparent focus:ring-black/20"
+                  title="Account Menu"
+                >
+                  {userDisplayName.charAt(0).toUpperCase()}
+                </button>
+
+                {/* Account Dropdown Menu */}
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-[calc(100%+8px)] w-[240px] bg-white rounded-2xl shadow-xl border border-black/10 p-2 z-50 overflow-hidden"
+                    >
+                      <div className="px-3 py-2 border-b border-black/5 mb-1">
+                        <p className="text-[13px] font-semibold text-[#1a1a1a] truncate">{userDisplayName}</p>
+                        <p className="text-[11px] text-[#8a8480] truncate">{user.email}</p>
+                        <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-neutral-100 text-neutral-800">
+                          {isAdmin ? '🛡️ Administrator' : '👤 Customer'}
+                        </span>
+                      </div>
+
+                      <div className="space-y-0.5">
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-neutral-900 hover:bg-neutral-100 transition-colors"
+                          >
+                            <ShieldCheck size={16} className="text-blue-600" />
+                            <span>Admin Portal</span>
+                          </Link>
+                        )}
+
+                        <Link
+                          href="/account"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-neutral-700 hover:bg-neutral-100 transition-colors"
+                        >
+                          <User size={16} />
+                          <span>My Account</span>
+                        </Link>
+
+                        <Link
+                          href="/account/wishlist"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-neutral-700 hover:bg-neutral-100 transition-colors"
+                        >
+                          <Heart size={16} />
+                          <span>Wishlist</span>
+                        </Link>
+
+                        <div className="border-t border-black/5 my-1"></div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            handleSignOut();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut size={16} />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : (
               <button
                 type="button"

@@ -9,13 +9,13 @@ import Link from 'next/link';
 import { formatCurrency } from '@/lib/utils';
 
 export default function AccountDashboardPage() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, isAdmin, signOut } = useAuth();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('orders');
 
   const handleSignOut = async () => {
     await signOut();
-    router.push('/');
+    window.location.href = '/auth/signin';
   };
 
   // Mock Orders Data
@@ -38,16 +38,58 @@ export default function AccountDashboardPage() {
 
   return (
     <div className="container-main py-[64px] max-w-[1000px] mx-auto space-y-[40px]">
-      <div>
-        <h1 className="text-section font-serif">My Account</h1>
-        <p className="text-[14px] text-foreground-secondary mt-[4px]">
-          Welcome back, {profile?.full_name || user?.email || 'Valued Guest'}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-section font-serif">My Account</h1>
+          <p className="text-[14px] text-foreground-secondary mt-[4px]">
+            Welcome back, {profile?.full_name || user?.email || 'Valued Guest'}
+          </p>
+        </div>
+
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white text-[13px] font-medium rounded-lg hover:bg-neutral-800 transition-colors w-fit"
+          >
+            <ShieldCheck size={16} />
+            Go to Admin Panel
+          </Link>
+        )}
       </div>
+
+      {isAdmin && (
+        <div className="bg-gradient-to-r from-neutral-900 via-neutral-800 to-neutral-900 text-white p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm border border-neutral-700">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white">
+              <ShieldCheck size={22} />
+            </div>
+            <div>
+              <h2 className="font-semibold text-[15px]">Administrator Privileges Enabled</h2>
+              <p className="text-[13px] text-white/70">You can manage products, categories, coupons, orders and site settings.</p>
+            </div>
+          </div>
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white text-neutral-950 font-semibold text-[13px] rounded-xl hover:bg-neutral-100 transition-colors shadow-sm"
+          >
+            Open Admin Panel &rarr;
+          </Link>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-[40px]">
         {/* Navigation Tabs */}
         <aside className="space-y-[6px]">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="w-full flex items-center gap-[12px] h-[48px] px-[16px] rounded-[8px] text-[14px] font-semibold text-accent bg-accent/5 hover:bg-accent/10 transition-colors mb-2"
+            >
+              <ShieldCheck size={18} />
+              Admin Portal
+            </Link>
+          )}
+
           <button
             onClick={() => setActiveTab('orders')}
             className={`w-full flex items-center gap-[12px] h-[48px] px-[16px] rounded-[8px] text-[14px] font-medium transition-colors ${

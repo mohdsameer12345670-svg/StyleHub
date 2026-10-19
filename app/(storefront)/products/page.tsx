@@ -1292,7 +1292,7 @@ function ProductsListContent() {
                       );
                     }}
                     className={cn(
-                      'px-[12px] py-[6px] rounded-full text-[13px] border',
+                      'px-[6px] py-[4px] rounded-full text-[11px] border',
                       selectedCategory ===
                         ''
                         ? 'border-foreground bg-foreground text-white'

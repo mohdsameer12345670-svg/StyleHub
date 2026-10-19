@@ -437,7 +437,7 @@ export default function ProductDetailPage({ params: initialParams }: { params?: 
 
                   {isSwatch ? (
                     /* ── Color / Swatch circles ── */
-                    <div className="flex flex-wrap gap-[10px]">
+                    <div className="flex flex-wrap gap-[8px]">
                       {opt.values?.map((val) => {
                         const isSelected = selectedColor === val.value;
                         const swatchColor = colorSwatchMap[val.value] || '#cccccc';
@@ -466,11 +466,11 @@ export default function ProductDetailPage({ params: initialParams }: { params?: 
                             }}
                             style={{ backgroundColor: swatchColor }}
                             className={cn(
-                              'w-8 h-8 rounded-full transition-all duration-200 flex-shrink-0',
+                              'w-6 h-6 rounded-full transition-all duration-200 flex-shrink-0',
                               isLight ? 'border border-border/60' : '',
                               isSelected
-                                ? 'ring-2 ring-offset-2 ring-foreground scale-110 shadow-md'
-                                : 'hover:scale-105 hover:shadow-sm'
+                                ? 'ring-2 ring-offset-2 ring-foreground scale-105 shadow-sm'
+                                : 'hover:scale-105 hover:shadow-xs'
                             )}
                           />
                         );
@@ -578,11 +578,11 @@ export default function ProductDetailPage({ params: initialParams }: { params?: 
 
           {/* Trust badges */}
           <div className="grid grid-cols-2 gap-3 pt-2">
-            <div className="flex items-center gap-2.5 p-3 rounded-sm bg-background-secondary/70 border border-border/50 text-[12px] text-foreground-secondary">
+            <div className="flex items-center gap-2.5 p-2 rounded-sm bg-background-secondary/70 border border-border/50 text-[12px] text-foreground-secondary">
               <Truck size={16} className="text-accent shrink-0" />
               <span>Free Delivery in 2-4 Days</span>
             </div>
-            <div className="flex items-center gap-2.5 p-3 rounded-sm bg-background-secondary/70 border border-border/50 text-[12px] text-foreground-secondary">
+            <div className="flex items-center gap-2.5 p-2 rounded-sm bg-background-secondary/70 border border-border/50 text-[12px] text-foreground-secondary">
               <RotateCcw size={16} className="text-accent shrink-0" />
               <span>14-Day Easy Returns</span>
             </div>

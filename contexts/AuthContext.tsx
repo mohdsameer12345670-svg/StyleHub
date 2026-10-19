@@ -41,6 +41,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const ADMIN_EMAILS = [
+    'mohdsameer12345670@gmail.com',
+  ];
+
   const fetchProfile = useCallback(async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -50,6 +54,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .single();
 
       if (!error && data) {
+        const isAdminUser = data.role === 'admin' || (data.email && ADMIN_EMAILS.includes(data.email.toLowerCase()));
+        if (isAdminUser && data.role !== 'admin') {
+          data.role = 'admin';
+          await supabase.from('profiles').update({ role: 'admin' }).eq('id', userId);
+        }
         setProfile(data as Profile);
       }
     } catch {
@@ -76,10 +85,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (mockDataStr) {
           try {
             const mockData = JSON.parse(mockDataStr);
+            const isMockAdmin = ADMIN_EMAILS.includes(mockData.email?.toLowerCase()) || mockData.email?.toLowerCase().includes('admin');
             const mockUser = { id: 'mock-user-1', email: mockData.email } as User;
             setUser(mockUser);
             setSession({ user: mockUser } as Session);
-            setProfile({ id: 'mock-user-1', email: mockData.email, full_name: mockData.fullName, role: 'customer' } as Profile);
+            setProfile({ id: 'mock-user-1', email: mockData.email, full_name: mockData.fullName, role: isMockAdmin ? 'admin' : 'customer' } as Profile);
           } catch (e) {
             // parse error
           }
@@ -117,10 +127,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: error as Error | null };
     } catch (e) {
       // Mock success for offline mode
+      const isMockAdmin = ADMIN_EMAILS.includes(email.toLowerCase()) || email.toLowerCase().includes('admin');
       const mockUser = { id: 'mock-user-1', email } as User;
       setUser(mockUser);
       setSession({ user: mockUser } as Session);
-      setProfile({ id: 'mock-user-1', email, full_name: 'Demo User', role: 'customer' } as Profile);
+      setProfile({ id: 'mock-user-1', email, full_name: 'Demo User', role: isMockAdmin ? 'admin' : 'customer' } as Profile);
       localStorage.setItem('mockUser', JSON.stringify({ email, fullName: 'Demo User' }));
       return { error: null };
     }
@@ -169,7 +180,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('mockUser');
   }, []);
 
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin =
+    profile?.role === 'admin' ||
+    (user?.email ? ADMIN_EMAILS.includes(user.email.toLowerCase()) : false);
 
   return (
     <AuthContext.Provider
